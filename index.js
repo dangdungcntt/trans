@@ -2,6 +2,8 @@ const translate = require('google-translate-api');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors  = require('cors');
+const https = require('https');
+const fs = require('fs')
 const app = express();
 
 app.use(cors());
@@ -36,5 +38,15 @@ app.post('/vi2vi', (req, res) => {
     });
   });
 })
+
+const httpsOptions = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem')
+}
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log('RUNNING ON PORT ' + port));
+https.createServer(httpsOptions, app).listen(port, (err) => {
+  if (err) {
+    return console.log(err);
+  }
+  console.log('RUNNING ON PORT ' + port)
+});
