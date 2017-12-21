@@ -39,14 +39,24 @@ app.post('/vi2vi', (req, res) => {
   });
 })
 
-const httpsOptions = {
-  key: fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem')
-}
 const port = process.env.PORT || 3000;
-https.createServer(httpsOptions, app).listen(port, (err) => {
-  if (err) {
-    return console.log(err);
+
+if (process.env.NODE_ENV && process.env.NODE_ENV == 'production') {
+  app.listen(port, (err) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log('RUNNING ON PORT ' + port)
+  });
+} else { 
+  const httpsOptions = {
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem')
   }
-  console.log('RUNNING ON PORT ' + port)
-});
+  https.createServer(httpsOptions, app).listen(port, (err) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log('RUNNING ON PORT ' + port)
+  });
+}
