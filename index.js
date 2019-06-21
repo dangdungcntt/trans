@@ -1,4 +1,4 @@
-const translate = require('google-translate-api');
+const translate = require('@vitalets/google-translate-api');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors  = require('cors');
@@ -24,6 +24,7 @@ app.post('/vi2vi', (req, res) => {
   }
   const text = req.body.text;
   translate(text, { from: 'vi', to: 'vi' }).then(data => {
+    console.log(data);
     if (data.from.text.didYouMean) {
       return res.status(200).json({
         text: data.from.text.value.split('[').join('').split(']').join('')
@@ -33,6 +34,7 @@ app.post('/vi2vi', (req, res) => {
       text
     });
   }).catch(err => {
+    console.log(err);
     return res.status(400).json({
       msg: 'Cannot get text'
     });
